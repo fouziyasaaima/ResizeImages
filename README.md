@@ -51,11 +51,15 @@ Update appsettings.json with your desired configuration before running the appli
 ```
 
 **TargetDimensions:** Width and height in pixels for resizing images.
+
 **SupportedFileTypes:** Array of file extensions (case insensitive) that the application will process.
-**SupportedFileTypes:** Array of file extensions (case insensitive) that the application will process.
+
 **SubfolderName:** Name of the subfolder where resized images will be saved.
+
 **OverwriteExisting:** If true, overwrite existing resized images with the same name.
+
 **LogFilePath:** Path to the log file where operations and errors will be logged.
+
 **MaxWidth and MaxHeight:** Maximum dimensions for images to trigger resizing.
 
 ## Usage
