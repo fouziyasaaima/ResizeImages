@@ -15,7 +15,7 @@ ResizeImages is a C# application that allows you to resize images in a specified
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/ResizeImages.git
+   git clone https://github.com/fouziyasaaima/ResizeImages.git
    cd ResizeImages
 
 2. **Restore dependencies:**
