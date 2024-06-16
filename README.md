@@ -7,7 +7,7 @@ ResizeImages is a C# application that allows you to resize images in a specified
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [Code Examples](#codeexamples) 
+- [Code Examples](#code examples) 
 - [Contributing](#contributing)
 - [License](#license)
 
