@@ -7,7 +7,7 @@ ResizeImages is a C# application that allows you to resize images in a specified
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Usage](#usage)
-- [Code Examples] (#codeexamples) 
+- [CodeExamples] (#codeexamples) 
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -71,7 +71,7 @@ dotnet run --project ResizeImages.csproj
 Enter the full path to the folder containing the images you want to resize.
 The application will process each image according to the configured settings.
 
-## Code Examples
+## CodeExamples
 ```
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
