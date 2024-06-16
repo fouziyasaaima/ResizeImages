@@ -8,8 +8,6 @@ ResizeImages is a C# application that allows you to resize images in a specified
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [CodeExamples](#codeexamples) 
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Installation
 1. **Clone the repository:**
@@ -104,9 +102,5 @@ public class ImageProcessor
 }
 ```
 
-## Contributing
-Contributions are welcome! Please fork the repository and submit pull requests to contribute to ResizeImages.
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
 
