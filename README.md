@@ -1,6 +1,6 @@
 # ResizeImages
 # Image Resizing Application
-ResizeImages is a C# application that allows you to resize images in a specified folder based on configuration settings provided in `appsettings.json`. It utilizes SixLabors.ImageSharp library for image processing.
+ResizeImages is a C# console application that allows you to resize images in a specified folder based on configuration settings provided in `appsettings.json`. It utilizes SixLabors.ImageSharp library for image processing.
 
 ## Table of Contents
 
