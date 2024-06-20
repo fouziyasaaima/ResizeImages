@@ -44,9 +44,25 @@ class ResizeImages
         }
     }
 
-    static void Main()
+    static void Main(string[] args)
     {
-        string configFilePath = "appsettings.json";
+        if (args.Length < 1)
+        {
+            Console.WriteLine("Usage: ResizeImages <FolderPath>");
+            return;
+        }
+
+        string folderPath = args[0];
+
+        if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
+        {
+            Console.WriteLine("Invalid folder path. Exiting.");
+            return;
+        }
+
+        // Get the path of the directory where the executable is located
+        string exeDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        string configFilePath = Path.Combine(exeDirectory, "appsettings.json");
 
         // Load configuration
         AppSettings settings;
@@ -60,27 +76,22 @@ class ResizeImages
             return;
         }
 
-        // Get folder path from user
-        Console.Write("Enter the full path to the folder containing the images: ");
-        string folderPath = Console.ReadLine();
-
-        if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
-        {
-            Log("Invalid folder path. Exiting.", settings.LogFilePath);
-            return;
-        }
-
         string resizedImagesFolder = Path.Combine(folderPath, settings.SubfolderName);
+        string backupImagesFolder = Path.Combine(folderPath, "backupimages");
 
-        // Ensure the resized images subfolder exists
+        // Ensure the resized images subfolder and backup subfolder exist
         if (!Directory.Exists(resizedImagesFolder))
         {
             Directory.CreateDirectory(resizedImagesFolder);
             Log($"Created subfolder for resized images: {resizedImagesFolder}", settings.LogFilePath);
         }
 
-        int newWidth = settings.TargetDimensions.Width;
-        int newHeight = settings.TargetDimensions.Height;
+        if (!Directory.Exists(backupImagesFolder))
+        {
+            Directory.CreateDirectory(backupImagesFolder);
+            Log($"Created subfolder for backup images: {backupImagesFolder}", settings.LogFilePath);
+        }
+
         int maxWidth = settings.MaxWidth;
         int maxHeight = settings.MaxHeight;
 
@@ -98,32 +109,50 @@ class ResizeImages
                 {
                     using (Image image = Image.Load(filePath))
                     {
+                        int originalWidth = image.Width;
+                        int originalHeight = image.Height;
                         bool resizeNeeded = false;
 
-                        // Check if image exceeds specified dimensions
-                        if (image.Width > maxWidth || image.Height > maxHeight)
+                        // Calculate the new dimensions while maintaining the aspect ratio
+                        int newWidth = originalWidth;
+                        int newHeight = originalHeight;
+
+                        if (originalWidth > maxWidth || originalHeight > maxHeight)
                         {
+                            double aspectRatio = (double)originalWidth / originalHeight;
+
+                            if (originalWidth > maxWidth)
+                            {
+                                newWidth = maxWidth;
+                                newHeight = (int)(maxWidth / aspectRatio);
+                            }
+
+                            if (newHeight > maxHeight)
+                            {
+                                newHeight = maxHeight;
+                                newWidth = (int)(maxHeight * aspectRatio);
+                            }
+
                             resizeNeeded = true;
                         }
 
                         if (resizeNeeded)
                         {
+                            // Backup the original image
+                            string backupFileName = Path.Combine(backupImagesFolder, Path.GetFileName(filePath));
+                            File.Copy(filePath, backupFileName, true); // Overwrite if backup exists
+
                             // Resize the image
                             image.Mutate(x => x.Resize(newWidth, newHeight));
 
-                            // Construct the new file path
-                            string newFileName = Path.Combine(resizedImagesFolder, $"resized_{newWidth}x{newHeight}_{Path.GetFileName(filePath)}");
+                            // Save the resized image in the resized images subfolder
+                            string newFileName = Path.Combine(resizedImagesFolder, Path.GetFileName(filePath));
+                            image.Save(newFileName);
 
-                            if (settings.OverwriteExisting || !File.Exists(newFileName))
-                            {
-                                // Save the resized image
-                                image.Save(newFileName);
-                                Log($"Resized: {filePath} to {newWidth}x{newHeight} and saved as {newFileName}", settings.LogFilePath);
-                            }
-                            else
-                            {
-                                Log($"Skipped saving {newFileName} as it already exists.", settings.LogFilePath);
-                            }
+                            // Replace the original image with the resized one
+                            File.Copy(newFileName, filePath, true); // Overwrite the original file with the resized image
+
+                            Log($"Resized: {filePath} to {newWidth}x{newHeight} and backed up original as {backupFileName}", settings.LogFilePath);
 
                             filesProcessed++;
                         }
